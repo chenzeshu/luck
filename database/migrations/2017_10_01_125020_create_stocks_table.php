@@ -17,8 +17,10 @@ class CreateStocksTable extends Migration
             $table->increments('id');
             $table->string('code');
             $table->string('name');
+            $table->integer('status')->default(0);
             $table->string('area')->nullable();
-            $table->enum('type', ['齐全', '不齐全'])->default('齐全');
+            $table->integer('fav')->default(0); //0未收藏， 1已收藏
+            $table->float('macd_max', 8, 5)->nullable(); //macd历史最大值， 用于百分比报警
             $table->timestamps();
         });
     }

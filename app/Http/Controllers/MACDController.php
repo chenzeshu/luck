@@ -2,6 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\v1\X\MonthController;
+use App\Jobs\testSMS;
+use App\Models\stock;
+use App\Utils\Sms;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use QL\QueryList;
 
@@ -102,13 +107,18 @@ class MACDController extends Controller
         $this->DEA = $DEA;
         $this->MACD = $MACD;
     }
+
     public function chart()
     {
         return view('chart');
     }
 
-    public function dea()
+    public function test()
     {
+      Carbon::setLocale('zh');
+      $date = "2017-07-31 00:00:00";
+      $data = Carbon::createFromFormat('Y-m-d H:i:s', $date)->diffForHumans();
+      return $data;
     }
 
     public function getcode() {
@@ -127,21 +137,11 @@ class MACDController extends Controller
                 'name' => $v[0]
             ];
         }
-//        dd($save);
-//        $content = json_encode($content, JSON_UNESCAPED_UNICODE);
-//        dd($content);
+
         DB::table('stocks')->insert($save);
         return "存储完毕";
-//       $re =
-//        if($re){
-//
-//        }else {
-//            return "出问题了";
-//        }
-    }
-
-    public function test(){
 
     }
+
 
 }

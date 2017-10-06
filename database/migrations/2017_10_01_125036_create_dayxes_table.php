@@ -16,7 +16,8 @@ class CreateDayxesTable extends Migration
         Schema::create('dayxes', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('stock_id');
-            $table->timestamp('time')->nullable();
+            $table->timestamp('date')->nullable();
+            $table->float('macd',8,5);
             $table->timestamps();
         });
     }
