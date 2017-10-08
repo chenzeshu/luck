@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\refer\myTime;
+use App\Models\refer\myValue;
 use Illuminate\Database\Eloquent\Model;
 
 class favorite extends Model
@@ -22,5 +24,15 @@ class favorite extends Model
     public function weekxes()
     {
         return $this->hasMany(weekx::class, 'stock_id', 'stock_id');
+    }
+
+    public function myValues()
+    {
+        return $this->hasMany(myValue::class);
+    }
+
+    public function myTimes()
+    {
+        return $this->hasMany(myTime::class);
     }
 }

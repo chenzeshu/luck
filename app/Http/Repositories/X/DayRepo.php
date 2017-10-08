@@ -61,16 +61,16 @@ class DayRepo extends GetXRepository
         $_length = count($this->DIFF);
         $this->LENGTH =$_length;
 
-        //todo 在本函数被触发时顺便完成找到最大值并存入的工作
-        $this->saveMaxOfMACD();
-
+        //todo 在本函数被触发时顺便完成找到最大值及当日MACD并存入的工作
+        $this->saveMaxAndCurOfMACD();
         return $this;
     }
 
-    protected function saveMaxOfMACD(){
+    protected function saveMaxAndCurOfMACD(){
        $data = $this->getMaxOfMACD()->pkgMaxData();
        stock::where('code', $data['code'])->update([
-           'macd_max'=>$data['macd_max']
+           'macd_max'=>$data['macd_max'],
+           'macd_cur'=>$this->MACD[($this->LENGTH-1)]
        ]);
     }
 

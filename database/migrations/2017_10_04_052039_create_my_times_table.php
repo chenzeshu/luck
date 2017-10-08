@@ -15,10 +15,11 @@ class CreateMyTimesTable extends Migration
     {
         Schema::create('my_times', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('stock_id');
+            $table->integer('favorite_id')->unique();
             $table->timestamp('refertime');
-            $table->integer('tem_id');//短信模板id
+            $table->string('tem_id');//短信模板id
             $table->text('msg')->nullable();  //提醒内容（站内提醒， 邮件等也可以用）
+            $table->integer('known')->default(0); //0:未知， 1：已知（不再提醒）
             $table->timestamps();
         });
     }

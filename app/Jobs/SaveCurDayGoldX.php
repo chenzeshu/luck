@@ -35,15 +35,15 @@ class SaveCurDayGoldX implements ShouldQueue
     public function handle(DayController $dayController)
     {
         DB::table('dayxes')->truncate();
-        $time1 = time();
+//        $time1 = time();
 
         $stocks = stock::where('status', 0)->get()->toArray();
         $now = date('Ymd', time());
         $data = [];
-        $count = 0;  //数据数目
+//        $count = 0;  //数据数目
         foreach ($stocks as $k => $v){
             $_data = $dayController->getX($v['code'], "20050505", $now);
-            $count += count($_data);
+//            $count += count($_data);
             if(count($_data) != 0) {
                 foreach ($_data as $m => $n) {
                     $data[] = [
@@ -63,9 +63,11 @@ class SaveCurDayGoldX implements ShouldQueue
             sleep(0.1);
         }
         DB::table('dayxes')->insert($data);
-        $time2 = time();
-        $time = $time2 - $time1;  //耗时
-        session(['time'=>$time]);
+
+
+//        $time2 = time();
+//        $time = $time2 - $time1;  //耗时
+//        session(['time'=>$time]);
 
         $this->job->delete();
         //短信通知(国庆因阿里云放假， 改用session)

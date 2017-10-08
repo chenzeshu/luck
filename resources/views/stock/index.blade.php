@@ -19,23 +19,10 @@
         text-indent: 16px;
         outline: 0;
     }
-    .save-fav{
-        display: inline-block;
-        height: 100px;
-        width: 25vw;
-        margin-bottom : 15px;
-        padding-top:15px;
-        border-bottom: 1px dotted rgba(0,0,0,.2);
-        background :#f5f7f9;
-        font-size :16px;
-        line-height: 20px;
-        text-indent: 16px;
-        outline: 0;
-    }
 </style>
 
 
-<table class="uk-table" id="stock-table">
+<table class="uk-table uk-table-hover uk-table-striped uk-table-condensed" id="stock-table">
     <thead>
     <tr>
         <th>#</th>
@@ -112,32 +99,6 @@
         location.href = "{{url('v1/stock/showChoice')}}"+"/" + id
     }
 
-    function save(id) {
-//        let  page = window.location.search
-//        page = code.substring(6,code.length)
-        let reason = $("#myFav-"+id).val()
-        if(!reason){
-            reason = prompt('填写收藏理由')
-        }
 
-        if(reason != null && reason != ""){
-            $.post("{{url('v1/f/save')}}", {id, reason, _token:"{{csrf_token()}}"}, function (res) {
-                if(res.errno == 0){
-                    UIkit.notify({
-                        message : res.msg,
-                        status  : 'info',
-                        timeout : 2000,
-                        pos     : 'top-center'
-                    });
-                    setTimeout(location.href = location.href)
-                }else{
-                    alert('收藏失败');
-                }
-            })
-        }else {
-            alert('你放弃填写或者填写内容不能为空！')
-        }
-
-    }
 </script>
 @endsection

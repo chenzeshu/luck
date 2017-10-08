@@ -17,4 +17,9 @@ class monthx extends Model
     {
         return $this->belongsTo(favorite::class);
     }
+
+    public function weekxes()
+    {
+        return $this->hasMany(weekx::class, 'stock_id', 'stock_id');
+    }
 }

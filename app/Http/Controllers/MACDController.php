@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\v1\X\DayController;
 use App\Http\Controllers\v1\X\MonthController;
 use App\Jobs\testSMS;
+use App\Models\monthx;
+use App\Models\refer\myTime;
+use App\Models\refer\myValue;
 use App\Models\stock;
+use App\msg;
 use App\Utils\Sms;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use QL\QueryList;
 
@@ -18,7 +24,6 @@ class MACDController extends Controller
     protected $DIFF = [];
     protected $DEA = [];
     protected $MACD = [];
-
 
     public function diff($code)
     {
@@ -113,12 +118,11 @@ class MACDController extends Controller
         return view('chart');
     }
 
-    public function test()
+    public function test(DayController $dayController)
     {
-      Carbon::setLocale('zh');
-      $date = "2017-07-31 00:00:00";
-      $data = Carbon::createFromFormat('Y-m-d H:i:s', $date)->diffForHumans();
-      return $data;
+        $_data = $dayController->getX('600756','20100505','20170929');
+
+        dd($_data);
     }
 
     public function getcode() {

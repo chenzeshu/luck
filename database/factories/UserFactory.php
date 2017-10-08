@@ -23,3 +23,14 @@ $factory->define(App\User::class, function (Faker $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(\App\msg::class, function (Faker $faker){
+    $type = ['百分比', '到时间'];
+
+   return [
+      'code' => '600756',
+      'desc' => '开始了',
+       'type'=> $faker->randomElement($type),
+       'read'=> rand(0,1)
+   ];
+});

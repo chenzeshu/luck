@@ -6,6 +6,7 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
+        "barryvdh/laravel-debugbar": "^3.1",
         "chenzeshu/chen-utils": "0.0.4",
         "fideloper/proxy": "~3.3",
         "jaeger/querylist": "^4.0",

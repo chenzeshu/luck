@@ -1,6 +1,5 @@
 @if ($paginator->hasPages())
 
-
     <ul class="uk-pagination uk-pagination-left">
         {{-- Previous Page Link --}}
         @if ($paginator->onFirstPage())

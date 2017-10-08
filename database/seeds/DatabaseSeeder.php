@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         $this->call(DelistSeed::class);
+//         $this->call(DelistSeed::class);
+         $this->call(msgSeed::class);
     }
 }

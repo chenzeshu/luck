@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         'App\Console\Commands\updateStocks',
-        'App\Console\Commands\updateDayStocks'
+        'App\Console\Commands\updateDayStocks',
+        'App\Console\Commands\checkStrategy'
     ];
 
     /**

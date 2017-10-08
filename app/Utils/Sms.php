@@ -21,7 +21,6 @@ Config::load();
  */
 class Sms
 {
-
     /**
      * 构造器
      *
@@ -103,6 +102,13 @@ class Sms
 
     }
 
+    public function myConvenience($phoneNumber, $templateParam)
+    {
+        $signName ="陈泽书1850255";
+        $templateCode = config('app.sms.data_update');
+        return $this->sendSms($signName, $templateCode, $phoneNumber, $templateParam);
+    }
+    
     /**
      * 查询短信发送情况范例
      *

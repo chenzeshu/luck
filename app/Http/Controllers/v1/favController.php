@@ -14,21 +14,21 @@ class favController extends Controller
 {
     public function getData($page, $size)
     {
-        Carbon::setLocale('zh');
         $start = ($page - 1) * $size;
-        $data = favorite::offset($start)->limit($size)->with('stock','monthxes','weekxes')->get()->toArray();
-//        return $data;
+        $data = favorite::offset($start)->limit($size)->with('stock','monthxes','weekxes')->with('myValues','myTimes')->get()->toArray();
+
         foreach ($data as $k => $stock){
             if(count($stock['weekxes']) !=0){
                 //todo 1. 改日期； 2，算百分比
                 $data[$k]['weekxes'][0]['date'] = Carbon::createFromFormat('Y-m-d H:i:s', $stock['weekxes'][0]['date'])->diffForHumans();
-                $data[$k]['weekxes'][0]['macd'] =  number_format(abs( $stock['weekxes'][0]['macd'] / $stock['stock']['macd_max']), 2) * 100 . "%";
+                $data[$k]['weekxes'][0]['macd'] =  number_format(abs( $stock['weekxes'][0]['macd'] / $stock['stock']['macd_max']), 4) * 100 . "%";
             }
             if(count($stock['monthxes']) !=0){
                 $data[$k]['monthxes'][0]['date']  = Carbon::createFromFormat('Y-m-d H:i:s', $stock['monthxes'][0]['date'])->diffForHumans();
-                $data[$k]['monthxes'][0]['macd'] =  number_format(abs( $stock['monthxes'][0]['macd'] / $stock['stock']['macd_max']),2) * 100 . "%";
+                $data[$k]['monthxes'][0]['macd'] =  number_format(abs( $stock['monthxes'][0]['macd'] / $stock['stock']['macd_max']),4) * 100 . "%";
             }
         }
+
         return view('fav.index', compact('data'));
     }
 
