@@ -44,7 +44,7 @@
 @section('customerJS')
     <script>
         function delMsg(id) {
-            if(prompt('是否删除？')){
+            if(confirm('是否删除？')){
                 $.get("{{url('v1/msg/delete')}}/"+id, function (res) {
                     UIkit.notify({
                         message : res.msg,

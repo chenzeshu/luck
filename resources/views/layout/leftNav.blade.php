@@ -15,7 +15,7 @@
         <a href="#">我的</a>
         <ul class="uk-nav-sub">
             <li><a href="{{url('v1/f/getdata/1/15')}}">我的收藏</a></li>
-            <li><a href="{{url('v1/msg/unread/1/10')}}">我的消息 <div class="uk-badge uk-badge-danger">{{getC('msg_num')}}</div></a></li>
+            <li><a href="{{url('v1/msg/unread/1/10')}}">我的消息 @if(getC('msg_num') != 0)<div class="uk-badge uk-badge-danger">{{getC('msg_num')}}</div>@endif</a></li>
             <li><a href="#">我的策略</a>
                 <ul>
                     <li><a href="{{url('v1/s/v/1/10')}}">按值提醒</a></li>

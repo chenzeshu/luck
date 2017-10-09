@@ -2,24 +2,24 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\sendTS;
+use App\Jobs\sendVS;
 use Illuminate\Console\Command;
 
-class checkStrategy extends Command
+class checkStrategy2 extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'strategy';
+    protected $signature = 'strategy:value';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = '检查stock是否满足策略，满足则发送短信+站内消息';
+    protected $description = '不和时间命令放在一起， 因为发送短信间隔太短会被遮蔽';
 
     /**
      * Create a new command instance.
@@ -38,8 +38,7 @@ class checkStrategy extends Command
      */
     public function handle()
     {
-        //todo 时间策略队列
-        sendTS::dispatch();
-
+        //todo 值策略队列
+        sendVS::dispatch();
     }
 }

@@ -19,6 +19,7 @@
         }
     </style>
 
+    <h2>我的收藏</h2>
     <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed" id="stock-table">
         <thead>
         <tr>
