@@ -25,7 +25,7 @@ $factory->define(App\User::class, function (Faker $faker) {
 });
 
 $factory->define(\App\msg::class, function (Faker $faker){
-    $type = ['百分比', '到时间'];
+    $type = ['到值了', '到时间'];
 
    return [
       'code' => '600756',
