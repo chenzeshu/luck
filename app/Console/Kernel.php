@@ -16,7 +16,8 @@ class Kernel extends ConsoleKernel
         'App\Console\Commands\updateStocks',
         'App\Console\Commands\updateDayStocks',
         'App\Console\Commands\checkStrategy',
-        'App\Console\Commands\checkStrategy2'
+        'App\Console\Commands\checkStrategy2',
+        'App\Console\Commands\updateX'
     ];
 
     /**
@@ -29,7 +30,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('update:stocks');
+//        $schedule->command('update:stocks');
     }
 
     /**

@@ -64,11 +64,8 @@ class SaveCurWeekGoldX implements ShouldQueue
             sleep(0.1);
 
         }
-        DB::table('weekxes')->insert($data);
 
-        $time2 = time();
-        $time = $time2 - $time1;  //耗时
-        session(['time'=>$time]);
+        DB::table('weekxes')->insert($data);
 
         $this->job->delete();
     }

@@ -24,7 +24,8 @@ class WeekController extends Controller
      */
     public function getX($code, $start, $end)
     {
-        $data = $this->repo->getDATA($code , $start, $end)->getX()->checkLastOne()->getLastGold();
+        $data = $this->repo->getDATA($code , $start, $end)->getX()->getLastGold();
+        dd($data);
         if($this->repo->delisted){
             //todo 先将股票标记为退市
             stock::where('code', $code)->update([

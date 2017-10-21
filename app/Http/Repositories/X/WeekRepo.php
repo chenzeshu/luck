@@ -29,38 +29,19 @@ class WeekRepo extends GetXRepository
             ->initData();
         $this->delisted = false;
         //fixme 应该第一天的EMA都为0
-        $LENGTH = count($this->DATA);
-        if($LENGTH ==0 ){
+        if($this->LENGTH ==0 ){
             $this->delisted = true;
             return $this;
         }
-        //EMA12第一天的值 //EMA26第一天的值
-        //PHP可以连续赋值
-        $EMA12 = $EMA26 = $DIFF = $DEA = $MACD = [];
-        $EMA12[0] = $EMA26[0] = $DIFF[0] = $DEA[0] = $MACD[0] = 0;
+
         $DATE[0] = $this->DATA[0][0];
 
-        for($i = 1; $i < ($LENGTH - 1); $i++){
+        for($i = 1; $i < $this->LENGTH; $i++){
             $DATE[$i] = $this->DATA[$i][0];
-//            $this->DATA[$i][3] = intval($this->DATA[$i][3]);
-            //todo 计算EMA12
-            $EMA12[$i] = $this->EMA12_a * $this->DATA[$i][3] + $this->EMA12_b * $EMA12[$i-1];
-            //todo 计算EMA26
-            $EMA26[$i] = $this->EMA26_a * $this->DATA[$i][3] + $this->EMA26_b * $EMA26[$i-1];
-            //todo 计算DIFF
-            $DIFF[$i] = $EMA12[$i] - $EMA26[$i];
-            //todo 计算DEA
-            $DEA[$i] = $this->DEA_a * $DEA[$i-1] + $this->DEA_b * $DIFF[$i];
-            //todo 计算MACD柱, 柱状值系数取2
-            $MACD[$i] = 2*($DIFF[$i] - $DEA[$i]);
         }
 
         $this->DATE = $DATE;
-        $this->DIFF = $DIFF;
-        $this->DEA = $DEA;
-        $this->MACD = $MACD;
-        $_length = count($this->DIFF);
-        $this->LENGTH =$_length;
+
 
         return $this;
     }
@@ -118,18 +99,17 @@ class WeekRepo extends GetXRepository
         //todo 重新清洗数据
         $DATA = [];
         $_length = count($this->WEEK_ARR);
-
+        $this->new = false;
         if($_length < 2){  //过滤并标记不满2个周的股票
             $this->new = true;
             return $this;
         }
 
-
         for($i = 0; $i < $_length; $i++){
             $DATA[] = $this->DATA[$this->WEEK_ARR[$i]];
         }
 
-        $LENGTH = count($DATA);
+        $LENGTH = count($DATA);  //得到周数据的长度
 
         //EMA12第一天的值 //EMA26第一天的值
         //PHP可以连续赋值
@@ -155,8 +135,8 @@ class WeekRepo extends GetXRepository
          * @return array
          */
         $x = [];
-        $month_length = count($EMA12);
-        for($j = 0; $j < ($month_length - 1); $j++){
+        $week_length = count($EMA12);
+        for($j = 0; $j < ($week_length - 1); $j++){
             if($DIFF[$j] < $DEA[$j] && $DIFF[$j+1]>$DEA[$j+1]){
                 $x[] = [
                     'date'=> $DATE[$j],
@@ -182,8 +162,7 @@ class WeekRepo extends GetXRepository
     public function getLastGold()
     {
         $this->checkLastOne();
-        $this->filter($this->x, 1);
-        return $this->filterArr;
+        return $this->filter($this->x, 1);
     }
 
     /**

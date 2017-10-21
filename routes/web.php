@@ -90,4 +90,6 @@ Route::group(['prefix'=>'v1', 'namespace'=> "v1"], function (){
         Route::post('/t/create','TimeController@create');
         Route::post('/t/update','TimeController@update');
     });
+
+    Route::get('v2/{code}/{start}/{end}', 'MACDController@dragDataFromWY');
 });

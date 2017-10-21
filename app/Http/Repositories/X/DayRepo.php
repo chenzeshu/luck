@@ -27,8 +27,7 @@ class DayRepo extends GetXRepository
             ->initData();
         $this->delisted = false;
         //fixme 应该第一天的EMA都为0
-        $LENGTH = count($this->DATA);
-        if($LENGTH ==0 ){
+        if($this->LENGTH ==0 ){  //没有数据, 说明退市了
             $this->delisted = true;
             return $this;
         }
@@ -36,12 +35,10 @@ class DayRepo extends GetXRepository
         //PHP可以连续赋值
         $EMA12 = $EMA26 = $DIFF = $DEA = $MACD = [];
         $EMA12[0] = $EMA26[0] = $DIFF[0] = $DEA[0] = $MACD[0] = 0;
-
         $DATE[0] = $this->DATA[0][0];
 
-        for($i = 1; $i < ($LENGTH - 1); $i++){
+        for($i = 1; $i < ($this->LENGTH - 1); $i++){
             $DATE[$i] = $this->DATA[$i][0];
-//            $this->DATA[$i][3] = intval($this->DATA[$i][3]);
             //todo 计算EMA12
             $EMA12[$i] = $this->EMA12_a * $this->DATA[$i][3] + $this->EMA12_b * $EMA12[$i-1];
             //todo 计算EMA26
@@ -58,8 +55,6 @@ class DayRepo extends GetXRepository
         $this->DIFF = $DIFF;
         $this->DEA = $DEA;
         $this->MACD = $MACD;
-        $_length = count($this->DIFF);
-        $this->LENGTH =$_length;
 
         //todo 在本函数被触发时顺便完成找到最大值及当日MACD并存入的工作
         $this->saveMaxAndCurOfMACD();
@@ -132,8 +127,7 @@ class DayRepo extends GetXRepository
      */
     public function getFiveGold()
     {
-        $this->filter($this->x, 5);
-        return $this->filterArr;
+        return $this->filter($this->x, 5);
     }
 
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\v1\X\DayController;
 use App\Http\Controllers\v1\X\MonthController;
+use App\Http\Controllers\v1\X\WeekController;
 use App\Jobs\testSMS;
 use App\Models\monthx;
 use App\Models\refer\myTime;
@@ -14,6 +15,7 @@ use App\Utils\Sms;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use QL\QueryList;
 
 require_once(base_path()."/vendor/jaeger/querylist/src/QueryList.php");
@@ -118,15 +120,66 @@ class MACDController extends Controller
         return view('chart');
     }
 
-    public function test(DayController $dayController)
+    public function test(\App\Http\Controllers\v1\MACDController $m)
     {
-        $_data = $dayController->getX('600756','20100505','20170929');
+        $stocks = stock::where('status', 0)->get()->toArray();
+        $now = date('Ymd', time());
+        $day = $week = $month = [];
+        foreach ($stocks as $k=>$v){
+            $_dayx  = $_weekx = $_monthx = [];
+            list($_dayx, $_weekx, $_monthx) = $m->dragDataFromWY($v['code'], '20050505', $now);
 
-        dd($_data);
+            if(!empty($_dayx)){
+                foreach ($_dayx as $dx){
+                    $day[] = [
+                        'date' => $dx['date'],
+                        'macd' => $dx['macd'],
+                        'stock_id' => $v['id']
+                    ];
+                }
+            }
+
+            if(!empty($_weekx)){
+
+            }
+
+            if(!empty($_monthx)){
+
+            }
+
+            if (count($day) > 100) {
+                DB::table('dayxs')->insert($day);
+                DB::table('weekxs')->insert($week);
+                DB::table('monthxes')->insert($month);
+                unset($day, $week, $month);
+                $day = $week = $month = [];
+            }
+
+        }
+    }
+    public function python()
+    {
+       $content = Storage::get('public/300.csv');
+       $content = iconv('gbk', 'utf8', $content);
+       $content = trim($content);
+       $content = json_encode($content, JSON_UNESCAPED_UNICODE);
+       $content = explode('\r\n', $content);
+       array_forget($content, 0);
+       list($key, $val) = array_divide($content);
+       $save2  = [];
+       foreach ($val as $k=>$v){
+           $v = explode(',',$v);
+           $save2[] = [
+               'code'=>$v[1],
+               'name'=>$v[2]
+           ];
+       }
+        return $save2;
     }
 
     public function getcode() {
-        return "不要再试, 已经存好了";
+        DB::table('stocks')->truncate();
+//        return "不要再试, 已经存好了";
         $url = "http://quote.eastmoney.com/stock_list.html";
         $content = QueryList::get($url)->find(".quotebody ul li a")->texts();
         $content->pop();
@@ -141,7 +194,8 @@ class MACDController extends Controller
                 'name' => $v[0]
             ];
         }
-
+        $save2 = $this->python();
+        $save = array_merge($save, $save2);
         DB::table('stocks')->insert($save);
         return "存储完毕";
 

@@ -58,8 +58,6 @@ class MonthRepo extends GetXRepository
         $this->DIFF = $DIFF;
         $this->DEA = $DEA;
         $this->MACD = $MACD;
-        $_length = count($this->DIFF);
-        $this->LENGTH =$_length;
 
         return $this;
     }
@@ -168,8 +166,8 @@ class MonthRepo extends GetXRepository
      */
     public function getLastGold()
     {
-        $this->filter($this->x, 1);
-        return $this->filterArr;
+        $this->checkLastOne();
+        return $this->filter($this->x, 1);
     }
 
     /**

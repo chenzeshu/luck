@@ -37,7 +37,6 @@ class SaveCurMonGoldX implements ShouldQueue
     public function handle(MonthController $monthController)
     {
         DB::table('monthxes')->truncate();
-        $time1 = time();
 
         $stocks = stock::where('status', 0)->get()->toArray();
         //目前只有python工具可以爬到上市时间， 暂时使用固定起始时间；
@@ -66,9 +65,6 @@ class SaveCurMonGoldX implements ShouldQueue
 
         DB::table('monthxes')->insert($data);
 
-        $time2 = time();
-        $time = $time2 - $time1;  //耗时
-        session(['time'=>$time]);
 
         $this->job->delete();
     }

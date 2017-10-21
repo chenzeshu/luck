@@ -53,38 +53,35 @@ class GetXRepository
         return $x;
     }
 
-    /**
-     * 1.判断最近的1个叉是否是金叉，如果不是， 返回null, 如果是， 返回数据
-     */
-    public function getWeek()
-    {
-        //todo 1： 将日期换算成星期，然后取星期最后一天（考虑节假日）
-    }
+//    /**
+//     * 1.判断最近的1个叉是否是金叉，如果不是， 返回null, 如果是， 返回数据
+//     */
+//    public function getWeek()
+//    {
+//        //todo 1： 将日期换算成星期，然后取星期最后一天（考虑节假日）
+//    }
+//
+//    /**
+//     * 1.判断最近的1个叉是否是金叉，如果不是， 返回null, 如果是， 返回数据
+//     */
+//    public function getMonth()
+//    {
+//
+//    }
 
     /**
-     * 1.判断最近的1个叉是否是金叉，如果不是， 返回null, 如果是， 返回数据
+     * 组装请求url
      */
-    public function getMonth()
-    {
-        
-    }
-    
     public function initUrl($code, $start, $end)
     {
-        //todo
-        //1:计算最后10个月X
-        //2:如果最后一个X是金x,保存，
-        //3:每天一次？其实每天一次与每月一次没有什么区别
-        //4:先采用网易api剔除停盘数据
-
+        $this->code = $code;
         if($code[0] == 6){
             $code = "0". $code;
         }else {
             $code = "1". $code;
         }
-        //todo 先用600756做一个测试
-        //todo 后期考虑使用env() + printf
-          $this->url = "http://quotes.money.163.com/service/chddata.html?code={$code}&start={$start}&end={$end}";
+
+        $this->url = "http://quotes.money.163.com/service/chddata.html?code={$code}&start={$start}&end={$end}";
 
         return $this;
     }
@@ -104,7 +101,6 @@ class GetXRepository
             }
             $DATA[] = $v;
         }
-
         $this->DATA = array_reverse($DATA);
         $this->EMA12_a = Params::EMA12_a;
         $this->EMA12_b = Params::EMA12_b;
@@ -112,7 +108,7 @@ class GetXRepository
         $this->EMA26_b = Params::EMA26_b;
         $this->DEA_a = Params::DEA_a;
         $this->DEA_b = Params::DEA_b;
-
+        $this->LENGTH = count($this->DATA);
         return $this;
     }
 
@@ -126,8 +122,7 @@ class GetXRepository
     protected function filter($x, $num, $type = 0){
         //避免传入空数组（有些新股没有月，周金X）
         if(count($x) == 0){
-            $this->filterArr = [];
-            return $this;
+            return $filterArr = [];
         }
 
         $y = [];
@@ -137,9 +132,8 @@ class GetXRepository
             }
         }
         $length = count($y);
-        $this->filterArr = array_slice($y, ($length - $num));
+        return array_slice($y, ($length - $num));
 
-        return $this;
     }
 
 

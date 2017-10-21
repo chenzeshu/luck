@@ -35,15 +35,12 @@ class SaveCurDayGoldX implements ShouldQueue
     public function handle(DayController $dayController)
     {
         DB::table('dayxes')->truncate();
-//        $time1 = time();
 
         $stocks = stock::where('status', 0)->get()->toArray();
         $now = date('Ymd', time());
         $data = [];
-//        $count = 0;  //数据数目
         foreach ($stocks as $k => $v){
             $_data = $dayController->getX($v['code'], "20050505", $now);
-//            $count += count($_data);
             if(count($_data) != 0) {
                 foreach ($_data as $m => $n) {
                     $data[] = [
