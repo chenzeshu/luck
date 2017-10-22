@@ -41,7 +41,8 @@ class updateStocks extends Command
     {
 
         SaveCurWeekGoldX::dispatch();
+        echo "更新weeking...";
         SaveCurMonGoldX::dispatch();
-        echo "更新中...";
+        echo "更新中monthing...";
     }
 }

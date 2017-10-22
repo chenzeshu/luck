@@ -122,40 +122,8 @@ class MACDController extends Controller
 
     public function test(\App\Http\Controllers\v1\MACDController $m)
     {
-        $stocks = stock::where('status', 0)->get()->toArray();
-        $now = date('Ymd', time());
-        $day = $week = $month = [];
-        foreach ($stocks as $k=>$v){
-            $_dayx  = $_weekx = $_monthx = [];
-            list($_dayx, $_weekx, $_monthx) = $m->dragDataFromWY($v['code'], '20050505', $now);
-
-            if(!empty($_dayx)){
-                foreach ($_dayx as $dx){
-                    $day[] = [
-                        'date' => $dx['date'],
-                        'macd' => $dx['macd'],
-                        'stock_id' => $v['id']
-                    ];
-                }
-            }
-
-            if(!empty($_weekx)){
-
-            }
-
-            if(!empty($_monthx)){
-
-            }
-
-            if (count($day) > 100) {
-                DB::table('dayxs')->insert($day);
-                DB::table('weekxs')->insert($week);
-                DB::table('monthxes')->insert($month);
-                unset($day, $week, $month);
-                $day = $week = $month = [];
-            }
-
-        }
+        $count = stock::where('status', 0)->count();
+        dd($count);
     }
     public function python()
     {

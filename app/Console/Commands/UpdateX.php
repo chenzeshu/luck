@@ -3,6 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Jobs\SaveX;
+use App\Jobs\SaveX2;
+use App\Jobs\SaveX3;
+use App\Jobs\SaveX4;
 use Illuminate\Console\Command;
 
 class UpdateX extends Command
@@ -39,5 +42,8 @@ class UpdateX extends Command
     public function handle()
     {
         SaveX::dispatch();
+        SaveX2::dispatch();
+        SaveX3::dispatch();
+        SaveX4::dispatch();
     }
 }

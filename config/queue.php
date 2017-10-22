@@ -62,6 +62,7 @@ return [
             'connection' => 'default',
             'queue' => 'default',
             'retry_after' => 960,
+            'expire'=> 600
         ],
 
     ],

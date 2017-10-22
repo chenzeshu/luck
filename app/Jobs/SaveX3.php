@@ -11,7 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Support\Facades\DB;
 
-class SaveX implements ShouldQueue
+class SaveX3 implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -34,11 +34,7 @@ class SaveX implements ShouldQueue
      */
     public function handle(MACDController $m)
     {
-        DB::table('dayxes')->truncate();
-        DB::table('weekxes')->truncate();
-        DB::table('monthxes')->truncate();
-
-        $stocks = stock::where('status', 0)->offset(0)->limit(850)->get()->toArray();
+        $stocks = stock::where('status', 0)->offset(1700)->limit(850)->get()->toArray();
         $now = date('Ymd', time());
         $day = $week = $month = [];
         foreach ($stocks as $k=>$v){

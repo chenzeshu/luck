@@ -67,7 +67,7 @@
 
 </body>
 
-<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script src="{{asset('js/uikit.mymin.js')}}"></script>   {{--自行压缩uikit.js，因为uikit.min.js做了代码混淆，很难改--}}
 <script src="{{asset('js/components/notify.min.js')}}"></script>
 <script src="{{asset('js/components/form-select.min.js')}}"></script>
