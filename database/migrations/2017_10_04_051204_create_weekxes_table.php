@@ -18,6 +18,7 @@ class CreateWeekxesTable extends Migration
             $table->integer('stock_id');
             $table->timestamp('date')->nullable();
             $table->float('macd',8,5);
+            $table->float('diff',8,5);
             $table->timestamps();
         });
     }

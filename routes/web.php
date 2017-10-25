@@ -22,6 +22,7 @@ Route::group(['prefix'=>'v1', 'namespace'=> "v1"], function (){
         Route::get('/getstock', 'StockController@getStock');
         Route::get('/search/{code}', 'StockController@search');
         Route::get('/showChoice/{stock_id}', 'StockController@showChoice');
+        Route::get('/output', 'StockController@output');  //下载txt
     });
 
     //得到数据的job
@@ -71,6 +72,9 @@ Route::group(['prefix'=>'v1', 'namespace'=> "v1"], function (){
         //复合筛选
         Route::get('/getmul/{page}/{size}','RecController@getData');
         Route::any('/mulsearch/{page}/{size}','RecController@search');
+
+        //Diff
+        Route::get('/useDiffSieve/{type}/{value}', 'RecController@useDiffSieve');
     });
 
     //提醒策略
@@ -81,7 +85,6 @@ Route::group(['prefix'=>'v1', 'namespace'=> "v1"], function (){
         Route::get('/v/{page}/{size}','ValueController@getData');
         Route::post('/v/create','ValueController@create');
         Route::post('/v/update','ValueController@update');
-
 
         //按时间
         Route::get('/t/delete/{id}','TimeController@delete');

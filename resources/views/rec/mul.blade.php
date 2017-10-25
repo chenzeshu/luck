@@ -2,13 +2,20 @@
 
 @section('content')
 
-    <h2>复合周月金叉推荐： 默认显示 <b style="color:red">3个月</b>内出现月金叉且周也为金叉的股票</h2>
+    <h2>复合周月金叉推荐： 默认显示 <b style="color:red">3个月</b>内出现月金叉且周也为金叉的股票(默认3个月内周金X)</h2>
     <div class="stock-search" onkeydown="mytest()">
         <form action="{{url('v1/rec/mulsearch/1/15')}}" method="post" class="uk-form">
             {{csrf_field()}}
-            <input type="" name="wanTime" data-uk-datepicker="{format:'YYYY-MM-DD'}" placeholder="选择起始日期" class="m-date-picker">
-            <input type="" name="wanTime2" data-uk-datepicker="{format:'YYYY-MM-DD'}" placeholder="选择截止日期" class="m-date-picker">
+            <input type="" name="wanTime" data-uk-datepicker="{format:'YYYY-MM-DD'}" placeholder="月X起始日期" class="m-date-picker">
+            <input type="" name="wanTime2" data-uk-datepicker="{format:'YYYY-MM-DD'}" placeholder="月X截止日期" class="m-date-picker">
+            <input type="" name="wanTime3" data-uk-datepicker="{format:'YYYY-MM-DD'}" placeholder="周X起始日期" class="m-date-picker">
+            <br>
+            <input type="text" name="diff1" placeholder="diff左区间">
+            <input type="text" name="diff2" placeholder="diff右区间">
+            <input type="radio" name="type" value="1">周(默认)
+            <input type="radio" name="type" value="2">月
             <button type="submit" class="uk-button uk-button-primary">搜索</button>
+            <a href="{{url('v1/stock/output')}}" class="uk-button">导出</a>
         </form>
     </div>
 

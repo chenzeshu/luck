@@ -46,6 +46,7 @@ class SaveX2 implements ShouldQueue
                     $day[] = [
                         'date' => $dx['date'],
                         'macd' => $dx['macd'],
+                        'diff' => $dx['diff'],
                         'stock_id' => $v['id']
                     ];
                 }
@@ -55,6 +56,7 @@ class SaveX2 implements ShouldQueue
                 $week[] = [
                     'date' => $_weekx[0]['date'],
                     'macd' => $_weekx[0]['macd'],
+                    'diff' => $_weekx[0]['diff'],
                     'stock_id' => $v['id']
                 ];
             }
@@ -63,6 +65,7 @@ class SaveX2 implements ShouldQueue
                 $month[] = [
                     'date' => $_monthx[0]['date'],
                     'macd' => $_monthx[0]['macd'],
+                    'diff' => $_monthx[0]['diff'],
                     'stock_id' => $v['id']
                 ];
             }
@@ -75,7 +78,7 @@ class SaveX2 implements ShouldQueue
                 $day = $week = $month = [];
             }
             unset($_dayx, $_weekx, $_monthx);
-            system('sync && echo 3 > /proc/sys/vm/drop_caches');
+//            system('sync && echo 3 > /proc/sys/vm/drop_caches');
 
         }
         DB::table('dayxes')->insert($day);

@@ -5,7 +5,9 @@ namespace App\Http\Controllers\v1;
 use App\Models\stock;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use QL\QueryList;
 
 class StockController extends Controller
@@ -54,5 +56,16 @@ class StockController extends Controller
         }
         DB::table('stocks')->insert($save);
         return "存储完毕";
+    }
+
+    /**
+     * 导出推荐
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function output()
+    {
+        $content = Cache::get('out');
+        Storage::put('file.txt', $content);
+        return response()->download(storage_path('app/file.txt'), date('Y-m-d', time()).'.txt');
     }
 }

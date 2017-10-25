@@ -173,6 +173,7 @@ class MACDRepo extends GetXRepository
                 $x[] = [
                     'date'=>$this->DATE[$j],
                     'macd' => $this->MACD[$j],
+                    'diff' => $this->DIFF[$j],
                     'type' => 0
                 ];
             }
@@ -180,6 +181,7 @@ class MACDRepo extends GetXRepository
                 $x[] = [
                     'date'=>$this->DATE[$j],
                     'macd' => $this->MACD[$j],
+                    'diff' => $this->DIFF[$j],
                     'type' => 1
                 ];
             }
@@ -240,6 +242,7 @@ class MACDRepo extends GetXRepository
                 $x[] = [
                     'date'=> $DATE[$j],
                     'macd' => $MACD[$j],
+                    'diff' => $DIFF[$j],
                     'type' => 0
                 ];
             }
@@ -247,6 +250,7 @@ class MACDRepo extends GetXRepository
                 $x[] = [
                     'date'=> $DATE[$j],
                     'macd' => $MACD[$j],
+                    'diff' => $DIFF[$j],
                     'type' => 1
                 ];
             }
@@ -316,6 +320,7 @@ class MACDRepo extends GetXRepository
                 $x[] = [
                     'date'=> $DATE[$j+1],    //若不+1， 对比600009 4.28金叉，我算出在3.31？
                     'macd' => $MACD[$j],
+                    'diff' => $DIFF[$j],
                     'type' => 0
                 ];
             }
@@ -323,6 +328,7 @@ class MACDRepo extends GetXRepository
                 $x[] = [
                     'date'=> $DATE[$j],
                     'macd' => $MACD[$j],
+                    'diff' => $DIFF[$j],
                     'type' => 1
                 ];
             }

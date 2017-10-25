@@ -48,14 +48,18 @@ class RecRepo
      * @param $cacheName 存入缓存是几个月前的值的键名
      */
     public function cacheAffair($request, $cacheName){
-        //todo 当没有填写$wanTime2， 希望获得距今的数据时，本人已经在AppServiceProvider中boot了Cache::put('wantime2', date('Y-m-d', time()), 3600);
-
         //当前台传来的是翻页请求（get）时，没有$request，此时使用缓存预先存储的月份时间来做筛选。
         $wanTime = $request->wanTime == "" ? getC('wantime') : $request->wanTime;
         $wanTime2 = $request->wanTime2 == "" ? getC('wantime2') : $request->wanTime2;
+        $wanTime3 = $request->wanTime3 == "" ? getC('wantime3') : $request->wanTime3;
 
+        //2缓存为空则使用当下时间
         if(getC("wantime2") == ""){
             $wanTime2 = date('Y-m-d H:i:s', time());
+        }
+
+        if(getC("wantime3") == ""){
+            $wanTime3 = $wanTime;
         }
 
         $_now = date('Y-m-d', time());
@@ -65,7 +69,8 @@ class RecRepo
         Cache::put($cacheName.'2', $diff2, 3600);
         Cache::put('wantime', $wanTime, 3600);
         Cache::put('wantime2', $wanTime2, 3600);
+        Cache::put('wantime3', $wanTime3, 3600);
 
-        return [$wanTime, $wanTime2];
+        return [$wanTime, $wanTime2, $wanTime3];
     }
 }
