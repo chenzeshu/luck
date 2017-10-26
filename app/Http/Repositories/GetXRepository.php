@@ -53,21 +53,6 @@ class GetXRepository
         return $x;
     }
 
-//    /**
-//     * 1.判断最近的1个叉是否是金叉，如果不是， 返回null, 如果是， 返回数据
-//     */
-//    public function getWeek()
-//    {
-//        //todo 1： 将日期换算成星期，然后取星期最后一天（考虑节假日）
-//    }
-//
-//    /**
-//     * 1.判断最近的1个叉是否是金叉，如果不是， 返回null, 如果是， 返回数据
-//     */
-//    public function getMonth()
-//    {
-//
-//    }
 
     /**
      * 组装请求url
@@ -93,7 +78,6 @@ class GetXRepository
         $content = collect(explode("\r\n", $content));
         $content->splice(0,1);
         $content->pop();
-
         foreach ($content as $k=>$v){
             $v = explode(",",$v);
             if($v[3]==0){
@@ -101,6 +85,7 @@ class GetXRepository
             }
             $DATA[] = $v;
         }
+
         $this->DATA = array_reverse($DATA);
         $this->EMA12_a = Params::EMA12_a;
         $this->EMA12_b = Params::EMA12_b;

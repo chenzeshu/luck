@@ -25,4 +25,6 @@ class Params
 
     const DEA_a = 8/10;
     const DEA_b = 2/10;
+
+    const START="20100505";
 }

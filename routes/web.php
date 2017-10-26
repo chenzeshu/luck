@@ -77,6 +77,12 @@ Route::group(['prefix'=>'v1', 'namespace'=> "v1"], function (){
         Route::get('/useDiffSieve/{type}/{value}', 'RecController@useDiffSieve');
     });
 
+    //todo 纯diff
+    Route::group(['prefix'=>'diff', 'namespace'=>'Rec'], function(){
+        //复合筛选
+        Route::any('/getdiff/{page}/{size}','DiffController@getData');
+    });
+
     //提醒策略
     Route::group(['prefix'=>'s', 'namespace'=>'Strategy'], function(){
         //按macd值
@@ -93,6 +99,8 @@ Route::group(['prefix'=>'v1', 'namespace'=> "v1"], function (){
         Route::post('/t/create','TimeController@create');
         Route::post('/t/update','TimeController@update');
     });
+
+
 
     Route::get('v2/{code}/{start}/{end}', 'MACDController@dragDataFromWY');
 });

@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Http\Controllers\v1\MACDController;
 use App\Models\stock;
+use App\Utils\Params;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -37,13 +38,14 @@ class SaveX implements ShouldQueue
         DB::table('dayxes')->truncate();
         DB::table('weekxes')->truncate();
         DB::table('monthxes')->truncate();
+        DB::table('diffs')->truncate();
 
         $stocks = stock::where('status', 0)->offset(0)->limit(850)->get()->toArray();
         $now = date('Ymd', time());
-        $day = $week = $month = [];
+        $day = $week = $month = $diffs = [];
         foreach ($stocks as $k=>$v){
-            $_dayx  = $_weekx = $_monthx = [];
-            list($_dayx, $_weekx, $_monthx) = $m->dragDataFromWY($v['code'], '20050505', $now);
+            $_dayx  = $_weekx = $_monthx = $_diff = [];
+            list($_dayx, $_weekx, $_monthx, $_diff) = $m->dragDataFromWY($v['code'], Params::START, $now);
 
             if(!empty($_dayx)){
                 foreach ($_dayx as $dx){
@@ -74,20 +76,31 @@ class SaveX implements ShouldQueue
                 ];
             }
 
+            //组装Diff
+            $diffs[] = [
+                'stock_id' => $v['id'],
+                'd_diff' => $_diff[0],
+                'w_diff' => $_diff[1],
+                'm_diff' => $_diff[2],
+            ];
+
             if (count($day) > 100) {
                 DB::table('dayxes')->insert($day);
                 DB::table('weekxes')->insert($week);
                 DB::table('monthxes')->insert($month);
-                unset($day, $week, $month);
-                $day = $week = $month = [];
+                DB::table('diffs')->insert($diffs);
+                unset($day, $week, $month, $diffs);
+                $day = $week = $month = $diffs = [];
             }
-            unset($_dayx, $_weekx, $_monthx);
-//            system('sync && echo 3 > /proc/sys/vm/drop_caches');
 
+            unset($_dayx, $_weekx, $_monthx, $_diff);
+//            system('sync && echo 3 > /proc/sys/vm/drop_caches');
         }
+
         DB::table('dayxes')->insert($day);
         DB::table('weekxes')->insert($week);
         DB::table('monthxes')->insert($month);
+        DB::table('diffs')->insert($diffs);
 
         $this->job->delete();
     }

@@ -26,6 +26,10 @@ class MACDRepo extends GetXRepository
     protected $new_m = false; //不满二月的新股标签 status = 2
     protected $new_w = false; //不满二周的新股标签 status = 3
     protected $code;
+
+    protected $d_diff;  //最后一日的diff
+    protected $w_diff;  //最后一周的diff包括没走完的月
+    protected $m_diff;  //最后一月的diff包括没走完的月
     /**
      * 得到沪深主板及中小板股票列表
      */
@@ -112,9 +116,9 @@ class MACDRepo extends GetXRepository
             $week = [];
         }
 //        提前释放内存试试
-        unset($this->DATA, $this->DATE,$this->DIFF,$this->DEA,$this->MACD);
-
-        return [$day, $week, $month];
+        $diffs = [$this->d_diff, $this->w_diff, $this->m_diff];
+        $this->DATA = $this->DATE = $this->DEA = $this->MACD= $this->DIFF = $this->LENGTH = [];
+        return [$day, $week, $month, $diffs];
 
     }
     
@@ -134,8 +138,7 @@ class MACDRepo extends GetXRepository
         $EMA12 = $EMA26 = $DIFF = $DEA = $MACD = [];
         $EMA12[0] = $EMA26[0] = $DIFF[0] = $DEA[0] = $MACD[0] = 0;
         $DATE[0] = $this->DATA[0][0];
-
-        for($i = 1; $i < ($this->LENGTH - 1); $i++){
+        for($i = 1; $i < $this->LENGTH; $i++){
             $DATE[$i] = $this->DATA[$i][0];
             //todo 计算EMA12
             $EMA12[$i] = $this->EMA12_a * $this->DATA[$i][3] + $this->EMA12_b * $EMA12[$i-1];
@@ -156,6 +159,8 @@ class MACDRepo extends GetXRepository
 
         //todo 在本函数被触发时顺便完成找到最大值及当日MACD并存入的工作
         $this->saveMaxAndCurOfMACD();
+        //todo get Last_Day_diff
+        $this->d_diff = $this->DIFF[$this->LENGTH-2];
         return $this;
     }
 
@@ -209,6 +214,7 @@ class MACDRepo extends GetXRepository
         for($i = 0; $i < $_length; $i++){
             $DATA[] = $this->DATA[$this->WEEK_ARR[$i]];
         }
+        $DATA[] = $this->DATA[$this->LENGTH - 1];
 
         $LENGTH = count($DATA);  //得到周数据的长度
 
@@ -217,7 +223,8 @@ class MACDRepo extends GetXRepository
         $EMA12 = $EMA26 = $DIFF = $DEA = $MACD = [];
         $EMA12[0] = $EMA26[0] = $DIFF[0] = $DEA[0] = $MACD[0] = 0;
         $DATE[0] = $DATA[0][0];
-        for($i = 1; $i < ($LENGTH - 1); $i++){
+
+        for($i = 1; $i < $LENGTH; $i++){
             $DATE[$i] = $DATA[$i][0];
             //todo 计算EMA12
             $EMA12[$i] = $this->EMA12_a * $DATA[$i][3] + $this->EMA12_b * $EMA12[$i-1];
@@ -230,6 +237,7 @@ class MACDRepo extends GetXRepository
             //todo 计算MACD柱, 柱状值系数取2
             $MACD[$i] = 2*($DIFF[$i] - $DEA[$i]);
         }
+
         /**
          * 得到最近所有的叉信息， status0 金， status1死
          * 注意： MA13与MA26， 东方财富通为MA5与MA10， 因此东方财富通会出现小金X，但我的不会， 我们只会在明显金X处出现吻合
@@ -255,7 +263,9 @@ class MACDRepo extends GetXRepository
                 ];
             }
         }
+
         $this->wx = $x;
+        $this->w_diff = $DIFF[count($DIFF)-1];
         return $this;
     }
 
@@ -275,18 +285,21 @@ class MACDRepo extends GetXRepository
 
         $DATA = [];
 
-        for($i = 0; $i< $length; $i++){
+        for($i = 0; $i< $length - 1; $i++){
             $j = $this->MONTH_ARR[$i];
             //todo 重新清洗数据
             $DATA[] = $this->DATA[$j];
         }
+        //todo 补上当前这个月
+        $DATA[] = $this->DATA[$this->LENGTH-1];
+
         $LENGTH = count($DATA);  //todo 得到月数据长度
         //EMA12第一天的值 //EMA26第一天的值
         //PHP可以连续赋值
         $EMA12 = $EMA26 = $DIFF = $DEA = $MACD = [];
         $EMA12[0] = $EMA26[0] = $DIFF[0] = $DEA[0] = $MACD[0] = 0;
         $DATE[0] = $DATA[0][0];
-        for($i = 1; $i < ($LENGTH - 1); $i++){
+        for($i = 1; $i < $LENGTH ; $i++){
             $DATE[$i] = $DATA[$i][0];
             //todo 计算EMA12
             $EMA12[$i] = $this->EMA12_a * $DATA[$i][3] + $this->EMA12_b * $EMA12[$i-1];
@@ -299,7 +312,6 @@ class MACDRepo extends GetXRepository
             //todo 计算MACD柱, 柱状值系数取2
             $MACD[$i] = 2*($DIFF[$i] - $DEA[$i]);
         }
-
         /**
          * 得到最近的月金叉 + 死叉  type0 金， type1 死
          * 注意： MA13与MA26， 东方财富通为MA5与MA10， 因此东方财富通会出现小金X，但我的不会， 我们只会在明显金X处出现吻合
@@ -334,6 +346,7 @@ class MACDRepo extends GetXRepository
             }
         }
         $this->mx = $x;
+        $this->m_diff = $DIFF[count($DIFF)-1];
         return $this;
     }
 
@@ -385,6 +398,7 @@ class MACDRepo extends GetXRepository
                 $month_arr[] = $i;
             }
         }
+
         //todo 最后一个月没有记上， 补上他的最后一日
         $month_arr[] = $length;
         $this->MONTH_ARR = $month_arr;

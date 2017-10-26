@@ -31,6 +31,7 @@
             <li><a href="{{url('v1/rec/getmonth/1/15')}}">月金叉股</a></li>
             <li><a href="{{url('v1/rec/getweek/1/15')}}">周金叉股</a></li>
             <li><a href="{{url('v1/rec/getmul/1/15')}}">月x+周x</a></li>
+            <li><a href="{{url('v1/diff/getdiff/1/15')}}">低diff</a></li>
         </ul>
     </li>
 </ul>
