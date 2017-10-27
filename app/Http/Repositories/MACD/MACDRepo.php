@@ -89,38 +89,6 @@ class MACDRepo extends GetXRepository
 
         return $this;
     }
-
-    public function getX()
-    {
-        $day = $this->getDayX()->getFiveGold();
-        $week = $this->getWeekX()->checkLastOne('week');
-        $month = $this->getMonthX()->checkLastOne('month');
-
-        if($this->delisted){ //退市
-            stock::where('code', $this->code)->update([
-                'status' => 1
-            ]);
-            //todo 再返回空数组避免其他表存储；
-            $day = [];
-        }
-        if($this->new_m){  //2月内新股
-            stock::where('code', $this->code)->update([
-                'status'=> 2
-            ]);
-            $month = [];
-        }
-        if($this->new_w){  //2周内新股
-            stock::where('code', $this->code)->update([
-                'status'=> 3
-            ]);
-            $week = [];
-        }
-//        提前释放内存试试
-        $diffs = [$this->d_diff, $this->w_diff, $this->m_diff];
-        $this->DATA = $this->DATE = $this->DEA = $this->MACD= $this->DIFF = $this->LENGTH = [];
-        return [$day, $week, $month, $diffs];
-
-    }
     
     /**
      * 日K 计算完整的MACD数据
@@ -129,7 +97,7 @@ class MACDRepo extends GetXRepository
     public function calDayMACD()
     {
         //fixme 应该第一天的EMA都为0
-        if($this->LENGTH ==0 ){  //没有数据, 说明退市了
+        if($this->LENGTH == 0 ){  //没有数据, 说明退市了
             $this->delisted = true;
             return $this;
         }
@@ -164,6 +132,39 @@ class MACDRepo extends GetXRepository
         return $this;
     }
 
+    public function getX()
+    {
+        $day = $this->getDayX()->getFiveGold();
+        $week = $this->getWeekX()->checkLastOne('week');
+        $month = $this->getMonthX()->checkLastOne('month');
+
+        if($this->delisted){ //退市
+            stock::where('code', $this->code)->update([
+                'status' => 1
+            ]);
+            //todo 再返回空数组避免其他表存储；
+            $day = [];
+        }
+        if($this->new_m){  //12月内新股
+            stock::where('code', $this->code)->update([
+                'status'=> 2
+            ]);
+            $month = [];
+        }
+
+        if($this->new_w){  //12周内新股
+            stock::where('code', $this->code)->update([
+                'status'=> 3
+            ]);
+            $week = [];
+        }
+//        提前释放内存试试
+        $diffs = [$this->d_diff, $this->w_diff, $this->m_diff];
+
+        $this->new_m = $this->delisted = $this->neww = false;
+        $this->WEEK_ARR = $this->MONTH_ARR = $this->DATA = $this->DATE = $this->DEA = $this->MACD= $this->DIFF = $this->LENGTH = [];
+        return [$day, $week, $month, $diffs];
+    }
     /**
      * from DayRepo
      * 得到最近所有的日金叉信息， status0 金， status1死
@@ -205,7 +206,8 @@ class MACDRepo extends GetXRepository
         //todo 重新清洗数据
 
         $_length = count($this->WEEK_ARR);
-        if($_length < 2){
+
+        if($_length < 12){  //不满12周的股票 这里直接用12个月代替了, 所以注释
             $this->new_w = true;
             return $this;  //直接return $this阻断即可, 因为此flag, 在getX里$week被直接设为空.
         }
@@ -278,7 +280,8 @@ class MACDRepo extends GetXRepository
         $this->getMonthArr();
 
         $length = count($this->MONTH_ARR);
-        if($length < 2){  //过滤并标记不满2个月的股票
+
+        if($length < 12){  //过滤并标记不满12个月的股票
             $this->new_m = true;
             return $this; //直接return $this阻断即可, 因为此flag, 在getX里$month被直接设为空.
         }
@@ -400,7 +403,8 @@ class MACDRepo extends GetXRepository
         }
 
         //todo 最后一个月没有记上， 补上他的最后一日
-        $month_arr[] = $length;
+        $month_arr[] = $length-1;
+//        sleep(0.1);
         $this->MONTH_ARR = $month_arr;
     }
 
@@ -441,7 +445,8 @@ class MACDRepo extends GetXRepository
             }
         }
         $this->WEEK_ARR = $week_arr;
-
+        $this->WEEK_ARR[] = $this->LENGTH -1;
+//        sleep(0.1);
         return $this;
     }
 

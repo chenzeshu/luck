@@ -2,21 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\v1\X\DayController;
-use App\Http\Controllers\v1\X\MonthController;
-use App\Http\Controllers\v1\X\WeekController;
 use App\Jobs\testSMS;
-use App\Models\dayx;
-use App\Models\Diff;
-use App\Models\monthx;
-use App\Models\refer\myTime;
-use App\Models\refer\myValue;
 use App\Models\stock;
-use App\msg;
 use App\Utils\Params;
-use App\Utils\Sms;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use QL\QueryList;
@@ -32,13 +20,6 @@ class MACDController extends Controller
 
     public function diff($code)
     {
-        //1st try
-        //选择起始日期, 若不选择, 默认为2010年1月1日  //结束日期默认为当日
-        //拿到起始日期至今的收盘价, 开始循环计算EMA12与EMA26
-        //得到每一天的DIFF
-        //得到每一天的DEA
-        //得到MACD
-        //成表+作图
         $code = "1".$code;
         $start= 20150227;
         $end=date('Ymt', time());
@@ -125,9 +106,112 @@ class MACDController extends Controller
 
     public function test()
     {
-        $data = Diff::where('m_diff', '<', '0.12')->where('m_diff', '>', '-0.12')->with('stock')->get()->toArray();
+        $data = stock::where('status', 2)->count();
         dd($data);
+
+        /*
+
+        stock::where('status', 2)->update(['status'=>0]);
+
+        DB::table('dayxes')->truncate();
+        DB::table('weekxes')->truncate();
+        DB::table('monthxes')->truncate();
+        DB::table('diffs')->truncate();
+
+        $stocks = stock::where('status', 0)->offset(0)->limit(50)->get()->toArray();
+
+        $now = date('Ymd', time());
+        $day = $week = $month = $diffs = [];
+        foreach ($stocks as $k=>$v){
+            $_dayx  = $_weekx = $_monthx = $_diff = [];
+            list($_dayx, $_weekx, $_monthx, $_diff) = $m->dragDataFromWY($v['code'], Params::START, $now);
+
+            if(!empty($_dayx)){
+                foreach ($_dayx as $dx){
+                    $day[] = [
+                        'date' => $dx['date'],
+                        'macd' => $dx['macd'],
+                        'diff' => $dx['diff'],
+                        'stock_id' => $v['id']
+                    ];
+                }
+            }
+
+            if(!empty($_weekx)){
+                $week[] = [
+                    'date' => $_weekx[0]['date'],
+                    'macd' => $_weekx[0]['macd'],
+                    'diff' => $_weekx[0]['diff'],
+                    'stock_id' => $v['id']
+                ];
+            }
+
+            if(!empty($_monthx)){
+                $month[] = [
+                    'date' => $_monthx[0]['date'],
+                    'macd' => $_monthx[0]['macd'],
+                    'diff' => $_monthx[0]['diff'],
+                    'stock_id' => $v['id']
+                ];
+            }
+
+            //组装Diff
+            $diffs[] = [
+                'stock_id' => $v['id'],
+                'd_diff' => $_diff[0],
+                'w_diff' => $_diff[1],
+                'm_diff' => $_diff[2],
+            ];
+
+            if (count($day) > 100) {
+                DB::table('dayxes')->insert($day);
+                DB::table('weekxes')->insert($week);
+                DB::table('monthxes')->insert($month);
+                DB::table('diffs')->insert($diffs);
+                unset($day, $week, $month, $diffs);
+                $day = $week = $month = $diffs = [];
+            }
+
+            unset($_dayx, $_weekx, $_monthx, $_diff);
+//            system('sync && echo 3 > /proc/sys/vm/drop_caches');
+        }
+
+        DB::table('dayxes')->insert($day);
+        DB::table('weekxes')->insert($week);
+        DB::table('monthxes')->insert($month);
+        DB::table('diffs')->insert($diffs);
+        */
     }
+
+    public function getTushare()
+    {
+        $content = Storage::get('public/1.csv');
+        $content = $this->transToUtf8Arr($content);
+        foreach ($content as $k=>$v){
+            $v = explode(':', $v);
+            $content[$k] = [
+                'code' => $v[0],
+                'name' => $v[1],
+            ];
+        }
+        DB::table('stocks')->truncate();
+        DB::table('stocks')->insert($content);
+        dd("ok");
+
+    }
+
+    private function transToUtf8Arr($content){
+        $content = iconv('gbk', 'utf8', $content);
+        $content = trim($content);
+        $content = json_encode($content, JSON_UNESCAPED_UNICODE);
+
+        //todo 去掉开头的引号
+        dd($content);
+
+        $content = explode('\r\n', $content);
+        return $content;
+    }
+
     public function python()
     {
        $content = Storage::get('public/300.csv');

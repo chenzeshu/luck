@@ -16,9 +16,9 @@ class CreateDiffsTable extends Migration
         Schema::create('diffs', function (Blueprint $table) {
             $table->increments('id');
             $table->string('stock_id');
-            $table->float('d_diff',8, 5);
-            $table->float('w_diff',8, 5);
-            $table->float('m_diff',8, 5);
+            $table->float('d_diff',8, 5)->nullable();
+            $table->float('w_diff',8, 5)->nullable();
+            $table->float('m_diff',8, 5)->nullable();
             $table->timestamps();
         });
     }

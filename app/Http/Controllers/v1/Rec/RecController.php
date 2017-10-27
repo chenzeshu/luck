@@ -118,7 +118,7 @@ class RecController extends Controller
     /**
      * 获得[$diff1, $diff2]区间内的值
      *
-     * 默认是使用月筛选
+     * 默认是使用周筛选
      */
     public function useDiffSieve($diff1, $diff2 , $type)
     {
